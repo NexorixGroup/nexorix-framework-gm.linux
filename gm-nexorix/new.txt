@@ -1,0 +1,192 @@
+Analise e adicione o Sistema: Hot Reload de Pasta (Lua)
+
+REQUISITO:
+Comando:
+`/reload <pasta/>`
+
+Exemplo:
+`/reload modulos/comandos/`
+
+Agora também:
+`/reload all` → recarrega todos os scripts do servidor
+
+---
+
+DEPENDÊNCIA:
+Função para listar arquivos:
+listFiles(path) → retorna { "a.lua", "b.lua" }
+
+(Implementado no core C++ e exposto pro Lua)
+
+---
+
+FUNÇÃO:
+
+function reloadFolder(folderPath)
+local files = listFiles(folderPath)
+
+```
+if not files or #files == 0 then
+    print("Nenhum arquivo encontrado em: "..folderPath)
+    return false
+end
+
+local successCount = 0
+
+for _, file in ipairs(files) do
+    if file:sub(-4) == ".lua" then
+        local fullPath = folderPath .. file
+
+        print("Recarregando: "..fullPath)
+
+        local ok = reloadScript(fullPath)
+
+        if ok then
+            successCount = successCount + 1
+        else
+            print("Erro ao recarregar: "..fullPath)
+        end
+    end
+end
+
+print("Reload finalizado: "..successCount.." scripts carregados.")
+return true
+```
+
+end
+
+---
+
+FUNÇÃO GLOBAL (NOVO):
+
+function reloadAll()
+print("Iniciando reload global...")
+
+```
+local total = 0
+
+for _, folder in ipairs(loadedFolders) do
+    print("Recarregando pasta: "..folder)
+
+    local files = listFiles(folder)
+
+    if files then
+        for _, file in ipairs(files) do
+            if file:sub(-4) == ".lua" then
+                local fullPath = folder .. file
+
+                local ok = reloadScript(fullPath)
+
+                if ok then
+                    total = total + 1
+                else
+                    print("Erro ao recarregar: "..fullPath)
+                end
+            end
+        end
+    end
+end
+
+print("Reload ALL finalizado: "..total.." scripts carregados.")
+return true
+```
+
+end
+
+---
+
+ATUALIZAÇÃO DO COMANDO:
+
+registerCommand("reload", function(player, args)
+if not isAdmin(player) then return end
+
+```
+local path = args[1]
+if not path then
+    sendPlayerMessage(player, "Uso: /reload <arquivo.lua | pasta/ | all>")
+    return
+end
+
+-- NOVO: reload global
+if path == "all" then
+    local ok = reloadAll()
+
+    if ok then
+        sendPlayerMessage(player, "Servidor recarregado com sucesso!")
+    else
+        sendPlayerMessage(player, "Erro no reload global.")
+    end
+    return
+end
+
+-- verificar se é pasta (termina com /)
+if path:sub(-1) == "/" then
+    local ok = reloadFolder(path)
+
+    if ok then
+        sendPlayerMessage(player, "Pasta recarregada com sucesso!")
+    else
+        sendPlayerMessage(player, "Erro ao recarregar pasta.")
+    end
+else
+    local ok = reloadScript(path)
+
+    if ok then
+        sendPlayerMessage(player, "Script recarregado!")
+    else
+        sendPlayerMessage(player, "Erro ao recarregar script.")
+    end
+end
+```
+
+end)
+
+---
+
+MELHORIAS OPCIONAIS:
+
+* Ordenação:
+  table.sort(files)
+
+---
+
+* Ignorar arquivos:
+  if file:sub(1,1) ~= "_" then
+
+---
+
+* Subpastas (recursivo):
+
+function reloadFolderRecursive(path)
+local items = listFiles(path)
+
+```
+for _, item in ipairs(items) do
+    if isDirectory(path .. item) then
+        reloadFolderRecursive(path .. item .. "/")
+    else
+        if item:sub(-4) == ".lua" then
+            reloadScript(path .. item)
+        end
+    end
+end
+```
+
+end
+
+---
+
+RESULTADO FINAL:
+
+✔ /reload comandos.lua → recarrega 1 script
+✔ /reload modulos/ → recarrega tudo
+✔ /reload modulos/comandos/ → recarrega só comandos
+✔ /reload all → recarrega todo o servidor
+
+✔ Sem reiniciar servidor
+✔ Comandos atualizados em tempo real
+
+---
+
+OBJETIVO:
+Sistema modular estilo plugin loader com hot-reload completo via comando.

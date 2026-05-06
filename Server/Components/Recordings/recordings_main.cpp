@@ -26,7 +26,7 @@ public:
 		type_ = type;
 		start_ = Time::now();
 
-		ghc::filesystem::path scriptfilesPath = ghc::filesystem::absolute("scriptfiles");
+		ghc::filesystem::path scriptfilesPath = ghc::filesystem::absolute("data");
 		if (!ghc::filesystem::exists(scriptfilesPath) || !ghc::filesystem::is_directory(scriptfilesPath))
 		{
 			ghc::filesystem::create_directory(scriptfilesPath);

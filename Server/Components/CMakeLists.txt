@@ -28,6 +28,11 @@ if(BUILD_PAWN_COMPONENT)
 	add_subdirectory(Pawn)
 endif()
 
+# Lua
+if(BUILD_LUA_COMPONENT)
+	add_subdirectory(Lua)
+endif()
+
 # SQLite
 if(BUILD_SQLITE_COMPONENT)
 	add_subdirectory(Databases)

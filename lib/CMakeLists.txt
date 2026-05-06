@@ -152,3 +152,9 @@ endif()
 # cxxopts
 # ----
 conan_omp_add_lib(cxxopts 2.2.1)
+
+# Lua 5.4
+# -------
+if(BUILD_LUA_COMPONENT)
+	add_subdirectory(lua)
+endif()

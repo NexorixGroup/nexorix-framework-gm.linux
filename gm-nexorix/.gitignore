@@ -1,0 +1,26 @@
+# Logs
+log-server.txt
+log.txt
+
+# Dados de runtime
+bans.json
+data/contas/
+data/NPCs/
+
+# Binários compilados
+scripts/*.amx
+sdk/GM.amx
+
+# Crash dumps
+nexorix_minidump.dmp
+
+# Binários do servidor (não versionar, usar build/)
+nexorix-server.exe
+nexorix-server.pdb
+mods/*.dll
+mods/*.pdb
+ext/*.dll
+ext/*.so
+
+# VSCode local
+.vscode/settings.json

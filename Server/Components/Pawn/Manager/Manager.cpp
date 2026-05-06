@@ -137,7 +137,7 @@ bool PawnManager::OnServerCommand(const ConsoleCommandSenderData& sender, std::s
 		{
 			return true;
 		}
-		if (Changemode("gamemodes/" + args))
+		if (Changemode("scripts/" + args))
 		{
 			gamemodeRepeat_ = 1;
 		}
@@ -329,7 +329,7 @@ void PawnManager::EndMainScript()
 			gamemodeRepeat_ = repeats_[gamemodeIndex_];
 		}
 
-		if (Changemode("gamemodes/" + gamemodes_[gamemodeIndex_]))
+		if (Changemode("scripts/" + gamemodes_[gamemodeIndex_]))
 		{
 			break;
 		}
@@ -440,7 +440,7 @@ bool PawnManager::Load(DynamicArray<StringView> const& mainScripts)
 		}
 	}
 	gamemodeRepeat_ = repeats_[0];
-	return Load("gamemodes/" + gamemodes_[0], true);
+	return Load("scripts/" + gamemodes_[0], true);
 }
 
 void PawnManager::openAMX(PawnScript& script, bool isEntryScript, bool restarting)

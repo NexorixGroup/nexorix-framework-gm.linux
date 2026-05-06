@@ -89,7 +89,7 @@ static IDatabaseConnection* doDBOpen(const std::string& name, int flags)
 	else
 	{
 		// TODO: Pass in the flags.
-		ghc::filesystem::path dbFilePath = ghc::filesystem::absolute("scriptfiles/" + path);
+		ghc::filesystem::path dbFilePath = ghc::filesystem::absolute("data/" + path);
 		return PawnManager::Get()->databases->open(protocol + dbFilePath.string() + parameters, flags);
 	}
 }

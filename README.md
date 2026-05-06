@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # open.mp
 
 ![status](https://github.com/openmultiplayer/open.mp/workflows/Build/badge.svg)
@@ -73,3 +74,7 @@ make
 
 
 
+=======
+# nexorix-framework
+Nexorix Framework: Um motor modular em Lua 5.4 para servidores de alto desempenho, incluindo o GameMode base 'Mode'.
+>>>>>>> fde63db55b05f40c92a9c8d5e0037d64ee7141b2

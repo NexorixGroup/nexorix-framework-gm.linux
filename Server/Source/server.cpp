@@ -76,7 +76,7 @@ LONG WINAPI ExceptionHandler(PEXCEPTION_POINTERS apExceptionInfo)
 	MiniDumpWriteDump_t MiniDumpWriteDump = reinterpret_cast<MiniDumpWriteDump_t>(GetProcAddress(mhLib, "MiniDumpWriteDump"));
 
 	HANDLE hFile = CreateFile(
-		"omp_minidump.dmp",
+		"nexorix_minidump.dmp",
 		GENERIC_WRITE,
 		FILE_SHARE_WRITE,
 		NULL,
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 	setlocale(LC_ALL, "");
 	setlocale(LC_NUMERIC, "C");
 
-	cxxopts::Options options(argv[0], "The open.mp game server");
+	cxxopts::Options options(argv[0], "The Nexorix game server");
 
 	options.add_options()("h,help", "Print usage information");
 	options.add_options()("default-config", "Generate default config.json");

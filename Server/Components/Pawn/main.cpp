@@ -116,8 +116,8 @@ public:
 		PawnManager::Get()->pluginManager.core = core;
 		core->getEventDispatcher().addEventHandler(this);
 
-		// Set AMXFILE environment variable to "{current_dir}/scriptfiles"
-		ghc::filesystem::path scriptfilesPath = ghc::filesystem::absolute("scriptfiles");
+		// Set AMXFILE environment variable to "{current_dir}/data"
+		ghc::filesystem::path scriptfilesPath = ghc::filesystem::absolute("data");
 		if (!ghc::filesystem::exists(scriptfilesPath) || !ghc::filesystem::is_directory(scriptfilesPath))
 		{
 			ghc::filesystem::create_directory(scriptfilesPath);
@@ -190,7 +190,10 @@ public:
 		config.getStrings("pawn.legacy_plugins", Span<StringView>(plugins.data(), plugins.size()));
 		for (auto& plugin : plugins)
 		{
-			pluginMgr.Load(String(plugin));
+			if (!plugin.empty())
+			{
+				pluginMgr.Load(String(plugin));
+			}
 		}
 
 		// load scripts

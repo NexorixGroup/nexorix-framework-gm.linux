@@ -32,11 +32,11 @@ bool NPCNode::initialize(ICore* core)
 		return false;
 	}
 
-	std::string filePath = "scriptfiles/NPCs/nodes/NODES" + std::to_string(nodeId_) + ".DAT";
+	std::string filePath = "data/NPCs/nodes/NODES" + std::to_string(nodeId_) + ".DAT";
 
 	if (!ghc::filesystem::exists(filePath))
 	{
-		std::string dirPath = "scriptfiles/NPCs/nodes";
+		std::string dirPath = "data/NPCs/nodes";
 		if (!ghc::filesystem::exists(dirPath))
 		{
 			ghc::filesystem::create_directories(dirPath);
@@ -62,14 +62,14 @@ bool NPCNode::initialize(ICore* core)
 			else
 			{
 				core->logLn(LogLevel::Warning, "[NPCs] Failed to save downloaded node file: NODES%d.DAT", nodeId_);
-				core->logLn(LogLevel::Message, "[NPCs] Download the package manually from https://assets.open.mp/npc_nodes/NODES.zip and extract the contents in `scriptfiles/NPCs/nodes/NODES`");
+				core->logLn(LogLevel::Message, "[NPCs] Download the package manually from https://assets.open.mp/npc_nodes/NODES.zip and extract the contents in `data/NPCs/nodes/NODES`");
 				return false;
 			}
 		}
 		else
 		{
 			core->logLn(LogLevel::Warning, "[NPCs] Failed to download node file: NODES%d.DAT (HTTP status: %d)", nodeId_, result ? result->status : -1);
-			core->logLn(LogLevel::Message, "[NPCs] Download the package manually from https://assets.open.mp/npc_nodes/NODES.zip and extract the contents in `scriptfiles/NPCs/nodes/NODES`");
+			core->logLn(LogLevel::Message, "[NPCs] Download the package manually from https://assets.open.mp/npc_nodes/NODES.zip and extract the contents in `data/NPCs/nodes/NODES`");
 			return false;
 		}
 	}

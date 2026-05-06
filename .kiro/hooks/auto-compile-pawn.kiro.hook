@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Auto-compilar GameMode",
+  "description": "Compila o gm.pwn automaticamente ao salvar, usando o pawncc do sdk/",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "gm-nexorix/scripts/*.pwn"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "gm-nexorix\\sdk\\pawncc.exe gm-nexorix\\scripts\\gm.pwn -Dgm-nexorix\\scripts -igm-nexorix\\sdk\\include -;+ -(+ -d3"
+  }
+}

@@ -56,11 +56,11 @@ static const std::map<String, ConfigStorage> Defaults {
 	{ "language", String("") },
 	{ "max_bots", 0 },
 	{ "max_players", 50 },
-	{ "name", String("open.mp server") },
+	{ "name", String("Nexorix server") },
 	{ "password", String("") },
 	{ "sleep", 5.0f },
 	{ "use_dyn_ticks", true },
-	{ "website", String("open.mp") },
+	{ "website", String("Nexorix") },
 	// game
 	{ "game.allow_interior_weapons", true },
 	{ "game.chat_radius", 200.0f },
@@ -91,7 +91,7 @@ static const std::map<String, ConfigStorage> Defaults {
 	{ "game.group_player_objects", false },
 	// logging
 	{ "logging.enable", true },
-	{ "logging.file", String("log.txt") },
+	{ "logging.file", String("log-server.txt") },
 	{ "logging.log_chat", true },
 	{ "logging.log_connection_messages", true },
 	{ "logging.log_cookies", false },
@@ -1037,7 +1037,7 @@ private:
 
 		// Set up request
 		httplib::Client request(domainStr.c_str());
-		request.set_default_headers({ { "User-Agent", "open.mp server" } });
+		request.set_default_headers({ { "User-Agent", "nexorix server" } });
 		request.enable_server_certificate_verification(true);
 		request.set_follow_location(true);
 		request.set_connection_timeout(Seconds(5));
@@ -1163,11 +1163,10 @@ private:
 
 	IComponent* loadComponent(const ghc::filesystem::path& path, bool highPriority = false)
 	{
-		printLn("Loading component %s", path.filename().u8string().c_str());
 		auto componentLib = highPriority ? LIBRARY_OPEN_GLOBAL(path.u8string().c_str()) : LIBRARY_OPEN(path.u8string().c_str());
 		if (componentLib == nullptr)
 		{
-			printLn("\tFailed to load component: %s.", utils::GetLastErrorAsString().c_str());
+			printLn("[Mods] Failed to load %s: %s.", path.filename().u8string().c_str(), utils::GetLastErrorAsString().c_str());
 			return nullptr;
 		}
 		ComponentEntryPoint_t OnComponentLoad = reinterpret_cast<ComponentEntryPoint_t>(LIBRARY_GET_ADDR(componentLib, "ComponentEntryPoint"));
@@ -1175,36 +1174,28 @@ private:
 		{
 			void* isSAMPPlugin = reinterpret_cast<void*>(LIBRARY_GET_ADDR(componentLib, "Supports"));
 			printLn(
-				"\tFailed to load component: %s.",
+				"[Mods] Failed to load %s: %s.",
+				path.filename().u8string().c_str(),
 				isSAMPPlugin
-					? "it is a SA-MP plugin, put it in plugins/ folder"
-					: "it is neither an open.mp component nor a SA-MP plugin");
+					? "it is a SA-MP plugin, put it in ext/ folder"
+					: "it is neither a nexorix component nor a SA-MP plugin");
 			LIBRARY_FREE(componentLib);
 			return nullptr;
 		}
 		IComponent* component = OnComponentLoad();
 		if (component == nullptr)
 		{
-			printLn("\tFailed to load component.");
+			printLn("[Mods] Failed to load %s.", path.filename().u8string().c_str());
 			LIBRARY_FREE(componentLib);
 			return nullptr;
 		}
 		int supports = component->supportedVersion();
 		if (supports != OMP_VERSION_MAJOR)
 		{
-			printLn("\tFailed to load component: Built for open.mp version %d, now on %d.", supports, OMP_VERSION_MAJOR);
+			printLn("[Mods] Failed to load %s: Built for nexorix version %d, now on %d.", path.filename().u8string().c_str(), supports, OMP_VERSION_MAJOR);
 			LIBRARY_FREE(componentLib);
 			return nullptr;
 		}
-		SemanticVersion ver = component->componentVersion();
-		printLn(
-			"\tSuccessfully loaded component %.*s (%u.%u.%u.%u) with UID %016llx",
-			PRINT_VIEW(component->componentName()),
-			ver.major,
-			ver.minor,
-			ver.patch,
-			ver.prerel,
-			component->getUID());
 		return component;
 	}
 
@@ -1237,6 +1228,8 @@ private:
 			}
 			return true;
 		};
+
+		printLn("Loading Mods...");
 
 		if (!componentsCfg || componentsCfg->empty())
 		{
@@ -1326,8 +1319,7 @@ private:
 				}
 				else
 				{
-					printLn("Loading component %s", p.filename().u8string().c_str());
-					printLn("\tCould not find component");
+					printLn("[Mods] Could not find component: %s", p.filename().u8string().c_str());
 				}
 			}
 
@@ -1350,14 +1342,12 @@ private:
 				}
 				else
 				{
-					printLn("Loading component %s", p.filename().u8string().c_str());
-					printLn("\tCould not find component");
+					printLn("[Mods] Could not find component: %s", p.filename().u8string().c_str());
 				}
 			}
 		}
 
-		std::string absPath = ghc::filesystem::canonical(path).string();
-		printLnU8("Loaded %i component(s) from %.*s", components.size(), PRINT_VIEW(StringView(absPath)));
+		printLn("Loaded %i mod(s) successfully.", components.size());
 	}
 
 	void playerInit(IPlayer& player)
@@ -1735,20 +1725,20 @@ public:
 			logFile = ::fopen(LogFileName.c_str(), "a");
 		}
 
-		printLn("Starting open.mp server (%u.%u.%u.%u) from commit %.*s", getVersion().major, getVersion().minor, getVersion().patch, getVersion().prerel, PRINT_VIEW(getVersionHash()));
+		printLn("Starting Nexorix server (%u.%u.%u.%u) from commit %.*s", getVersion().major, getVersion().minor, getVersion().patch, getVersion().prerel, PRINT_VIEW(getVersionHash()));
 
 #ifdef OMP_STATIC_OPENSSL
 		logLn(LogLevel::Warning, "Running static OpenSSL build - plugins that use OpenSSL might crash (discord-connector, pawn-requests). It's recommended to use the dynssl build.");
 #endif
 
 		// Try to load components from the current directory
-		loadComponents("components");
+		loadComponents("mods");
 
 		// No components found in the current directory, try the executable path
 		if (components.size() == 0)
 		{
 			auto componentsDir = utils::GetExecutablePath().remove_filename();
-			componentsDir /= ghc::filesystem::path("components");
+			componentsDir /= ghc::filesystem::path("mods");
 			loadComponents(componentsDir);
 		}
 
@@ -1811,7 +1801,7 @@ public:
 		}
 
 		const SemanticVersion version = getVersion();
-		String versionStr = "open.mp " + std::to_string(version.major) + "." + std::to_string(version.minor) + "." + std::to_string(version.patch);
+		String versionStr = "nexorix " + std::to_string(version.major) + "." + std::to_string(version.minor) + "." + std::to_string(version.patch);
 		if (version.prerel != 0)
 		{
 			versionStr += "." + std::to_string(version.prerel);

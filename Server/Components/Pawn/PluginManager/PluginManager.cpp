@@ -18,16 +18,16 @@ struct BrokenPluginMessageData
 
 static const StaticArray<BrokenPluginMessageData, 25> BrokenPlugins = {
 	{
-		{ "YSF", "It requires memory hacking to run and is therefore broken on open.mp, we already added many built-in features from YSF to open.mp and the rest are coming" },
-		{ "YSF_DL", "It requires memory hacking to run and is therefore broken on open.mp, we already added many built-in features from YSF to open.mp and the rest are coming" },
-		{ "YSF_static", "It requires memory hacking to run and is therefore broken on open.mp, we already added many built-in features from YSF to open.mp and the rest are coming" },
-		{ "YSF_DL_static", "It requires memory hacking to run and is therefore broken on open.mp, we already added many built-in features from YSF to open.mp and the rest are coming" },
-		{ "fixes2", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
-		{ "FCNPC", "It requires memory hacking to run and is therefore broken on open.mp, we already have NPC component with many built-in features in open.mp" },
-		{ "FCNPC-DL", "It requires memory hacking to run and is therefore broken on open.mp, we already have NPC component with many built-in features in open.mp" },
-		{ "SKY", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
-		{ "sampcac_server", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
-		{ "ASAN", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
+		{ "YSF", "It requires memory hacking to run and is therefore broken on nexorix, we already added many built-in features from YSF to nexorix and the rest are coming" },
+		{ "YSF_DL", "It requires memory hacking to run and is therefore broken on nexorix, we already added many built-in features from YSF to nexorix and the rest are coming" },
+		{ "YSF_static", "It requires memory hacking to run and is therefore broken on nexorix, we already added many built-in features from YSF to nexorix and the rest are coming" },
+		{ "YSF_DL_static", "It requires memory hacking to run and is therefore broken on nexorix, we already added many built-in features from YSF to nexorix and the rest are coming" },
+		{ "fixes2", "It requires memory hacking to run and is therefore broken on nexorix. There should be a replacement component supported by nexorix" },
+		{ "FCNPC", "It requires memory hacking to run and is therefore broken on nexorix, we already have NPC component with many built-in features in nexorix" },
+		{ "FCNPC-DL", "It requires memory hacking to run and is therefore broken on nexorix, we already have NPC component with many built-in features in nexorix" },
+		{ "SKY", "It requires memory hacking to run and is therefore broken on nexorix. There should be a replacement component supported by nexorix" },
+		{ "sampcac_server", "It requires memory hacking to run and is therefore broken on nexorix. There should be a replacement component supported by nexorix" },
+		{ "ASAN", "It requires memory hacking to run and is therefore broken on nexorix. There should be a replacement component supported by nexorix" },
 		{ "samp-custom-query-flood-check", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
 		{ "AntiVehicleSpawn", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
 		{ "mcmd", "It requires memory hacking to run and is therefore broken on open.mp. There should be a replacement component supported by open.mp" },
@@ -49,7 +49,7 @@ static const StaticArray<BrokenPluginMessageData, 25> BrokenPlugins = {
 };
 
 PawnPluginManager::PawnPluginManager()
-	: pluginPath_("plugins/")
+	: pluginPath_("ext/")
 	, basePath_("./")
 {
 }
@@ -64,6 +64,12 @@ PawnPluginManager::~PawnPluginManager()
 
 void PawnPluginManager::Load(std::string const& name)
 {
+	// Ignorar strings vazias
+	if (name.empty())
+	{
+		return;
+	}
+
 	if (plugins_.count(name))
 	{
 		return;
@@ -120,7 +126,7 @@ void PawnPluginManager::Spawn(std::string const& name)
 		utils::Canonicalise(basePath_ + pluginPath_ + name, canon);
 	}
 
-	core->printLn("Loading plugin: %s", name.c_str());
+	core->printLn("Loading ext: %s", name.c_str());
 
 	std::unique_ptr<PawnPlugin> ptr = std::make_unique<PawnPlugin>(canon, core);
 

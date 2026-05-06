@@ -1,0 +1,18 @@
+# Bancos de dados
+*.db
+*.db-shm
+*.db-wal
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.bak
+
+# Pasta de build (C++)
+build/
+bin/
+obj/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
