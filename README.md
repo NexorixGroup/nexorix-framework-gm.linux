@@ -20,6 +20,7 @@ O **Nexorix Framework** é uma solução de nível empresarial para o desenvolvi
 - [🗄️ Persistência de Dados (SQLite)](#️-persistência-de-dados-sqlite)
 - [🛠️ API Nativa (nx_)](#️-api-nativa-nx_)
 - [🛡️ Segurança e Anti-Cheat](#️-segurança-e-anti-cheat)
+- [🔄 Hot-Reload (Recarregamento Vivo)](#-hot-reload-recarregamento-vivo)
 - [🏗️ Proteção de Código (Bytecode)](#️-proteção-de-código-bytecode)
 - [🎨 Crie seu Servidor](#-crie-seu-próprio-servidor)
 - [📞 Suporte](#-suporte-e-comunidade)
@@ -216,14 +217,55 @@ end
 
 ---
 
+## 🔄 Hot-Reload (Recarregamento Vivo)
+
+O Nexorix Framework elimina a necessidade de reiniciar o servidor para aplicar mudanças no código. O sistema de **Hot-Reload** permite que você atualize scripts Lua instantaneamente enquanto o servidor está rodando.
+
+### Como funciona?
+- **Detecção Automática**: O motor monitora alterações nos arquivos da pasta `lua/`.
+- **Persistência de Estado**: O sistema é desenhado para recarregar a lógica sem desconectar os jogadores ou perder dados em memória (quando configurado corretamente).
+- **Comando Interno**: Você pode forçar o recarregamento via console ou comando in-game (se implementado no GameMode).
+
+### Exemplo de Comando de Reload:
+
+Você pode criar um comando administrativo para recarregar módulos específicos sem precisar reiniciar o servidor.
+
+```lua
+function OnPlayerCommand(playerid, cmdtext)
+    local cmd, params = cmdtext:match("^/(%w+)%s*(.*)$")
+    
+    if cmd == "reload" then
+        if not nx_IsPlayerAdmin(playerid) then 
+            return nx_SendClientMessage(playerid, 0xFF0000FF, "Erro: Apenas administradores!") 
+        end
+        
+        if params == "" then 
+            return nx_SendClientMessage(playerid, 0xFFFF00FF, "Uso: /reload [caminho/do/arquivo.lua]") 
+        end
+        
+        local success, error = nx_reloadScript(params)
+        
+        if success then
+            nx_SendClientMessageToAll(0x00FF00FF, string.format("[SISTEMA] O módulo '%s' foi atualizado!", params))
+        else
+            nx_SendClientMessage(playerid, 0xFF0000FF, "Erro no Reload: " .. error)
+        end
+        return true
+    end
+    return false
+end
+```
+
+---
+
 ## 🏗️ Proteção de Código (Bytecode)
 
-O Nexorix suporta nativamente a execução de **Lua Bytecode**, uma camada de segurança essencial para desenvolvedores profissionais e grandes organizações.
+O Nexorix oferece suporte nativo à execução de **Lua Bytecode (5.4)**, permitindo que desenvolvedores protejam sua propriedade intelectual e garantam a integridade dos sistemas em ambientes de produção.
 
-### Por que usar?
-- **Segurança**: Transforma seus arquivos `.lua` (texto legível) em binários `.luac` (ilegíveis), protegendo algoritmos e sistemas exclusivos.
-- **Integridade**: Impede que terceiros façam edições não autorizadas no funcionamento do GameMode.
-- **Performance**: Reduz o tempo de parsing inicial do script pelo motor Lua.
+### 🛡️ Benefícios da Compilação
+- **Ofuscação de Lógica**: Transforma o código-fonte legível (`.lua`) em um formato binário (`.luac`), impedindo a engenharia reversa e o plágio de sistemas exclusivos.
+- **Imutabilidade**: Garante que o código executado no servidor seja exatamente o que você desenvolveu, evitando modificações maliciosas ou acidentais por terceiros.
+- **Otimização de Inicialização**: O bytecode pula a fase de análise sintática (parsing), permitindo que scripts complexos sejam carregados instantaneamente.
 
 ---
 
