@@ -1,0 +1,39 @@
+{
+    "name": "Nexorix Server",
+    "language": "Portuguese",
+    "website": "Nexorix",
+    "network": {
+        "bind": "0.0.0.0",
+        "port": 7777,
+        "allow_nick_change": true
+    },
+    "max_players": 50,
+    "announce": false,
+
+    "__scripting_mode": "Selecione o modo: 'pawn', 'lua' ou 'both'. Ao usar 'both' o Pawn tem prioridade nos callbacks.",
+    "scripting_mode": "lua",
+
+    "lua": {
+        "main_scripts": ["main"]
+    },
+    "pawn": {
+        "main_scripts": [
+            "gm 1"
+        ],
+        "legacy_plugins": [
+            "sscanf"
+        ]
+    },
+    "logging": {
+        "log_queries": false,
+        "log_chat": true
+    },
+
+    "__discord": "Configuracao do bot Discord. token nunca aparece em logs.",
+    "discord": {
+        "enabled": "false",
+        "token": "SEU_BOT_TOKEN_AQUI",
+        "prefix": "!",
+        "channel_id": "SEU_CHANNEL_ID_AQUI"
+    }
+}
