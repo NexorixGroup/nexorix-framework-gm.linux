@@ -1,0 +1,12 @@
+{
+    "mods": [
+        {
+            "name": "nrg500",
+            "version": "1.0.0",
+            "url": "https://github.com/user-attachments/files/27495831/nrg500.zip",
+            "type": "dff",
+            "target": "models/nrg500.dff",
+            "required": true
+        }
+    ]
+}
