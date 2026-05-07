@@ -284,7 +284,7 @@ Seja você um iniciante ou um expert, o Nexorix é a tela em branco para o seu p
 
 - **Discord**: [Junte-se à nossa comunidade](https://discord.gg/FmwRjEYXec)
 - **Documentação**: [Wiki Oficial](https://wiki.nexorix.com) *(Em breve)*
-- **Issues**: [Reportar um bug](https://github.com/nexorix/issues)
+- **Issues**: [Reportar um bug](https://github.com/issues/assigned)
 
 ---
 
