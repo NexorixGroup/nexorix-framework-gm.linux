@@ -159,6 +159,48 @@ Discord_SendEmbed("Titulo", "Descricao", 65280)
 
 > **Nota:** O Discord bot requer OpenSSL. No Linux sem OpenSSL, o bot fica desabilitado automaticamente mas o resto do servidor funciona normalmente.
 
+### Database (SQLite)
+
+```lua
+-- Abrir banco de dados
+local db = nx_db_open("meu_banco.db")
+
+-- Criar tabela
+nx_db_exec(db, "CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, nome TEXT, nivel INTEGER)")
+
+-- Inserir com parâmetros (seguro contra SQL injection)
+nx_db_exec(db, "INSERT INTO players (nome, nivel) VALUES (?, ?)", "Rick", 10)
+
+-- Consultar
+local rows = nx_db_query(db, "SELECT * FROM players WHERE nome = ?", "Rick")
+for _, row in ipairs(rows) do
+    nx_print(row.id .. " | " .. row.nome .. " | Nivel: " .. row.nivel)
+end
+
+-- Último ID inserido
+local id = nx_db_last_insert_id(db)
+
+-- Linhas afetadas pelo último INSERT/UPDATE/DELETE
+local changes = nx_db_changes(db)
+
+-- Fechar banco
+nx_db_close(db)
+```
+
+Funções disponíveis:
+- `nx_db_open(path)` — Abre/cria banco SQLite
+- `nx_db_close(db)` — Fecha o banco
+- `nx_db_exec(db, sql, ...)` — Executa INSERT/UPDATE/DELETE/CREATE
+- `nx_db_query(db, sql, ...)` — Executa SELECT, retorna tabela de rows
+- `nx_db_last_insert_id(db)` — Último rowid inserido
+- `nx_db_changes(db)` — Linhas afetadas
+- `nx_db_prepare(db, sql)` — Prepared statement
+- `nx_db_bind(stmt, index, value)` — Bind valor ao statement
+- `nx_db_step(stmt)` — Executa step ("row"/"done"/"error")
+- `nx_db_column(stmt, index)` — Lê coluna (0-based)
+- `nx_db_reset(stmt)` — Reset statement para reusar
+- `nx_db_finalize(stmt)` — Libera statement
+
 ## config.json
 
 ```json
