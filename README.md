@@ -213,6 +213,37 @@ sudo apt-get install libc6:i386 libstdc++6:i386
 - O framework é thread-safe e otimizado para performance
 - Voice requer o client SampVoice instalado nos players
 
+## Hot-Reload
+
+O framework suporta recarregamento de módulos em tempo real sem reiniciar o servidor.
+
+### Comandos
+
+```
+/reload          — Recarrega todos os módulos automaticamente
+/reload commands — Recarrega um módulo específico
+/modules         — Lista todos os módulos detectados
+```
+
+### Como funciona
+
+- Escaneia recursivamente `gamemode/modulos/` e `include/`
+- Limpa o cache `package.loaded` do módulo
+- Re-executa o arquivo com `loadfile` + `pcall`
+- Hooks e comandos são re-registrados automaticamente
+
+### Exemplo de uso
+
+1. Edite `gamemode/modulos/commands.lua` e adicione um novo comando
+2. No jogo, digite `/reload commands`
+3. O novo comando já está disponível sem reiniciar
+
+### Permissão
+
+Requer admin nível 4+ (Gerente). Configure no sistema admin.
+
+> **Nota:** O reload funciona para a maioria dos casos. Se algo não atualizar, reinicie o servidor.
+
 ## Créditos
 
 Nexorix Framework — Desenvolvido por Rick_Spooky
